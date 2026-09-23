@@ -26,20 +26,18 @@ const homePath = getRelativeLocaleUrl(locale, "");
 ---
 
 <Layout>
+  <canvas
+    class="home-particle-field"
+    data-home-particle-field
+    aria-hidden="true"></canvas>
   <Header />
   <main
     id="main-content"
     data-layout="index"
     data-home-path={homePath}
-    class="app-layout"
+    class="home-page-layer app-layout"
   >
-    <section
-      id="hero"
-      data-mouse-reactive
-      class="interactive-hero border-border border-b pt-8 pb-6"
-    >
-      <div class="mouse-aura" aria-hidden="true"></div>
-      <div class="mouse-spark" aria-hidden="true"></div>
+    <section id="hero" class="border-border border-b pt-8 pb-6">
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
         远在天边，<span class="text-accent">好东西在眼前。</span>
       </h1>
@@ -72,19 +70,19 @@ const homePath = getRelativeLocaleUrl(locale, "");
         </LinkButton>
       </p>
       <div class="mt-8 grid gap-3 sm:grid-cols-3">
-        <div class="hero-card border-border rounded-lg border p-4">
+        <div class="cosmic-card border-border rounded-lg border p-4">
           <strong class="block">AI 实践</strong>
           <span class="text-muted-foreground mt-1 block text-sm"
             >模型、工作流与真实项目</span
           >
         </div>
-        <div class="hero-card border-border rounded-lg border p-4">
+        <div class="cosmic-card border-border rounded-lg border p-4">
           <strong class="block">方法沉淀</strong>
           <span class="text-muted-foreground mt-1 block text-sm"
             >可复用的经验与思考</span
           >
         </div>
-        <div class="hero-card border-border rounded-lg border p-4">
+        <div class="cosmic-card border-border rounded-lg border p-4">
           <strong class="block">创作展示</strong>
           <span class="text-muted-foreground mt-1 block text-sm"
             >作品、实验与新鲜想法</span
@@ -146,134 +144,421 @@ const homePath = getRelativeLocaleUrl(locale, "");
       </LinkButton>
     </div>
   </main>
-  <Footer />
+  <Footer class="home-page-layer" />
 </Layout>
 
 <style>
-  .interactive-hero {
-    --pointer-x: 72%;
-    --pointer-y: 26%;
-    --aura-opacity: 0.38;
-    --tilt-x: 0deg;
-    --tilt-y: 0deg;
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
+  .home-particle-field {
+    position: fixed;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    inset: 0;
+    width: 100vw;
+    height: 100svh;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        circle at 14% 18%,
+        color-mix(in srgb, var(--accent) 8%, transparent),
+        transparent 32%
+      ),
+      radial-gradient(
+        circle at 86% 72%,
+        color-mix(in srgb, var(--accent) 6%, transparent),
+        transparent 34%
+      );
+    opacity: 0.92;
   }
 
-  .interactive-hero > :not(.mouse-aura, .mouse-spark) {
+  .home-page-layer,
+  :global(body:has(.home-particle-field) > header) {
     position: relative;
     z-index: 1;
   }
 
-  .mouse-aura {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        15rem circle at var(--pointer-x) var(--pointer-y),
-        color-mix(in srgb, var(--accent) 19%, transparent),
-        transparent 72%
-      ),
-      radial-gradient(
-        34rem circle at var(--pointer-x) var(--pointer-y),
-        color-mix(in srgb, var(--accent) 7%, transparent),
-        transparent 54%
-      );
-    opacity: var(--aura-opacity);
-    transition: opacity 280ms ease;
+  :global(body:has(.home-particle-field)) {
+    position: relative;
+    isolation: isolate;
+    overflow-x: hidden;
   }
 
-  .mouse-spark {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    width: 1.65rem;
-    height: 1.65rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 48%, transparent);
-    border-radius: 999px;
-    pointer-events: none;
-    opacity: 0;
-    box-shadow:
-      0 0 1.25rem color-mix(in srgb, var(--accent) 36%, transparent),
-      inset 0 0 0.8rem color-mix(in srgb, var(--accent) 10%, transparent);
-    transform: translate3d(var(--pointer-x), var(--pointer-y), 0)
-      translate(-50%, -50%);
-    transition: opacity 180ms ease;
-    will-change: transform;
+  :global(body:has(.home-particle-field) > header > div) {
+    background: color-mix(in srgb, var(--background) 82%, transparent);
+    -webkit-backdrop-filter: blur(0.75rem);
+    backdrop-filter: blur(0.75rem);
   }
 
-  .mouse-spark::before,
-  .mouse-spark::after {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    content: "";
-    border-radius: 999px;
-    background: var(--accent);
-  }
-
-  .mouse-spark::before {
-    width: 0.28rem;
-    height: 0.28rem;
-    margin: -0.14rem;
-    box-shadow: 0 0 0.55rem var(--accent);
-  }
-
-  .mouse-spark::after {
-    width: 0.2rem;
-    height: 0.2rem;
-    margin: -0.1rem;
-    transform-origin: center;
-    animation: pointer-orbit 2.8s linear infinite;
-  }
-
-  .interactive-hero[data-pointer-active="true"] .mouse-spark {
-    opacity: 0.9;
-  }
-
-  .hero-card {
-    background: color-mix(in srgb, var(--background) 84%, transparent);
-    box-shadow: 0 0 0 transparent;
-    transform: perspective(42rem) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  .cosmic-card {
+    background: color-mix(in srgb, var(--background) 76%, transparent);
+    -webkit-backdrop-filter: blur(0.65rem);
+    backdrop-filter: blur(0.65rem);
     transition:
-      transform 150ms ease-out,
-      border-color 180ms ease,
-      box-shadow 180ms ease;
-    will-change: transform;
+      transform 200ms ease,
+      border-color 200ms ease,
+      box-shadow 200ms ease;
   }
 
-  .interactive-hero[data-pointer-active="true"] .hero-card {
-    border-color: color-mix(in srgb, var(--accent) 44%, var(--border));
-    box-shadow: 0 0.8rem 2.2rem
-      color-mix(in srgb, var(--accent) 7%, transparent);
-  }
-
-  @keyframes pointer-orbit {
-    from {
-      transform: rotate(0deg) translateX(0.95rem);
-    }
-    to {
-      transform: rotate(360deg) translateX(0.95rem);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce), (pointer: coarse) {
-    .mouse-spark {
-      display: none;
-    }
-
-    .hero-card {
-      transform: none;
-      transition: border-color 180ms ease;
-    }
+  .cosmic-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+    box-shadow: 0 0.85rem 2.6rem
+      color-mix(in srgb, var(--accent) 10%, transparent);
+    transform: translateY(-0.2rem);
   }
 </style>
 
 <script>
+  type RGB = { r: number; g: number; b: number };
+  type Particle = {
+    x: number;
+    y: number;
+    driftX: number;
+    driftY: number;
+    impulseX: number;
+    impulseY: number;
+    radius: number;
+    phase: number;
+  };
+  type TrailPoint = { x: number; y: number; life: number };
+  type Spark = TrailPoint & { vx: number; vy: number; radius: number };
+  type Ripple = { x: number; y: number; radius: number; life: number };
+
+  const runtimeWindow = window as Window & {
+    __homeParticleCleanup?: () => void;
+  };
+
+  function parseColor(value: string, fallback: RGB): RGB {
+    const color = value.trim();
+    const shortHex = color.match(/^#([\da-f])([\da-f])([\da-f])$/i);
+    const hex = color.match(/^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i);
+    const rgb = color.match(/rgba?\(\s*(\d+)\D+(\d+)\D+(\d+)/i);
+
+    if (shortHex) {
+      return {
+        r: parseInt(shortHex[1] + shortHex[1], 16),
+        g: parseInt(shortHex[2] + shortHex[2], 16),
+        b: parseInt(shortHex[3] + shortHex[3], 16),
+      };
+    }
+
+    if (hex) {
+      return {
+        r: parseInt(hex[1], 16),
+        g: parseInt(hex[2], 16),
+        b: parseInt(hex[3], 16),
+      };
+    }
+
+    if (rgb) {
+      return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
+    }
+
+    return fallback;
+  }
+
+  function initParticleField() {
+    runtimeWindow.__homeParticleCleanup?.();
+
+    const canvas = document.querySelector<HTMLCanvasElement>(
+      "[data-home-particle-field]"
+    );
+    const context = canvas?.getContext("2d");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const coarsePointer = window.matchMedia("(pointer: coarse)");
+
+    if (!canvas || !context || reducedMotion.matches || coarsePointer.matches) {
+      return;
+    }
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let particles: Particle[] = [];
+    let trail: TrailPoint[] = [];
+    let sparks: Spark[] = [];
+    let ripples: Ripple[] = [];
+    let animationFrame = 0;
+    let accent: RGB = { r: 0, g: 108, b: 172 };
+    let foreground: RGB = { r: 40, g: 39, b: 40 };
+    const pointer = {
+      x: width / 2,
+      y: height / 2,
+      previousX: width / 2,
+      previousY: height / 2,
+      active: false,
+    };
+
+    const rgba = (color: RGB, alpha: number) =>
+      `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+
+    const updatePalette = () => {
+      const styles = getComputedStyle(document.documentElement);
+      accent = parseColor(styles.getPropertyValue("--accent"), accent);
+      foreground = parseColor(
+        styles.getPropertyValue("--foreground"),
+        foreground
+      );
+    };
+
+    const createParticle = (): Particle => {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 0.06 + Math.random() * 0.16;
+      return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        driftX: Math.cos(angle) * speed,
+        driftY: Math.sin(angle) * speed,
+        impulseX: 0,
+        impulseY: 0,
+        radius: 0.8 + Math.random() * 1.45,
+        phase: Math.random() * Math.PI * 2,
+      };
+    };
+
+    const resize = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      const density = Math.floor((width * height) / 18000);
+      const particleCount = Math.min(96, Math.max(44, density));
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+      canvas.width = Math.floor(width * pixelRatio);
+      canvas.height = Math.floor(height * pixelRatio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      particles = Array.from({ length: particleCount }, createParticle);
+    };
+
+    const movePointer = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+
+      const movement = Math.hypot(
+        event.clientX - pointer.previousX,
+        event.clientY - pointer.previousY
+      );
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      pointer.active = true;
+      trail.push({ x: pointer.x, y: pointer.y, life: 1 });
+
+      if (movement > 3) {
+        const sparkCount = movement > 22 ? 2 : 1;
+        for (let index = 0; index < sparkCount; index += 1) {
+          sparks.push({
+            x: pointer.x + (Math.random() - 0.5) * 9,
+            y: pointer.y + (Math.random() - 0.5) * 9,
+            vx: (Math.random() - 0.5) * 0.9,
+            vy: (Math.random() - 0.5) * 0.9,
+            radius: 0.7 + Math.random() * 1.7,
+            life: 1,
+          });
+        }
+      }
+
+      pointer.previousX = pointer.x;
+      pointer.previousY = pointer.y;
+      if (trail.length > 26) trail.splice(0, trail.length - 26);
+      if (sparks.length > 72) sparks.splice(0, sparks.length - 72);
+    };
+
+    const releasePointer = (event: PointerEvent) => {
+      if (event.relatedTarget === null) pointer.active = false;
+    };
+
+    const createRipple = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      ripples.push({
+        x: event.clientX,
+        y: event.clientY,
+        radius: 8,
+        life: 1,
+      });
+      if (ripples.length > 5) ripples.shift();
+    };
+
+    const draw = () => {
+      context.clearRect(0, 0, width, height);
+
+      if (pointer.active) {
+        const glow = context.createRadialGradient(
+          pointer.x,
+          pointer.y,
+          0,
+          pointer.x,
+          pointer.y,
+          165
+        );
+        glow.addColorStop(0, rgba(accent, 0.18));
+        glow.addColorStop(0.3, rgba(accent, 0.08));
+        glow.addColorStop(1, rgba(accent, 0));
+        context.fillStyle = glow;
+        context.beginPath();
+        context.arc(pointer.x, pointer.y, 165, 0, Math.PI * 2);
+        context.fill();
+      }
+
+      trail = trail.filter(point => point.life > 0.02);
+      trail.forEach((point, index) => {
+        point.life *= 0.93;
+        if (index === 0) return;
+        const previous = trail[index - 1];
+        context.strokeStyle = rgba(accent, point.life * 0.28);
+        context.lineWidth = 0.8 + point.life * 1.5;
+        context.beginPath();
+        context.moveTo(previous.x, previous.y);
+        context.lineTo(point.x, point.y);
+        context.stroke();
+      });
+
+      particles.forEach(particle => {
+        if (pointer.active) {
+          const dx = pointer.x - particle.x;
+          const dy = pointer.y - particle.y;
+          const distance = Math.max(Math.hypot(dx, dy), 0.1);
+
+          if (distance < 230) {
+            const attraction = (1 - distance / 230) * 0.018;
+            particle.impulseX += (dx / distance) * attraction;
+            particle.impulseY += (dy / distance) * attraction;
+
+            if (distance < 58) {
+              const repulsion = (1 - distance / 58) * 0.075;
+              particle.impulseX -= (dx / distance) * repulsion;
+              particle.impulseY -= (dy / distance) * repulsion;
+            }
+          }
+        }
+
+        particle.phase += 0.008;
+        particle.impulseX *= 0.955;
+        particle.impulseY *= 0.955;
+        particle.x +=
+          particle.driftX +
+          particle.impulseX +
+          Math.cos(particle.phase) * 0.018;
+        particle.y +=
+          particle.driftY +
+          particle.impulseY +
+          Math.sin(particle.phase) * 0.018;
+
+        if (particle.x < -16) particle.x = width + 16;
+        if (particle.x > width + 16) particle.x = -16;
+        if (particle.y < -16) particle.y = height + 16;
+        if (particle.y > height + 16) particle.y = -16;
+      });
+
+      const connectionDistance = 128;
+      context.lineWidth = 0.55;
+      for (let first = 0; first < particles.length; first += 1) {
+        for (let second = first + 1; second < particles.length; second += 1) {
+          const a = particles[first];
+          const b = particles[second];
+          const distance = Math.hypot(a.x - b.x, a.y - b.y);
+          if (distance >= connectionDistance) continue;
+
+          context.strokeStyle = rgba(
+            foreground,
+            (1 - distance / connectionDistance) * 0.075
+          );
+          context.beginPath();
+          context.moveTo(a.x, a.y);
+          context.lineTo(b.x, b.y);
+          context.stroke();
+        }
+      }
+
+      particles.forEach(particle => {
+        const distanceToPointer = pointer.active
+          ? Math.hypot(pointer.x - particle.x, pointer.y - particle.y)
+          : Infinity;
+        const nearPointer = Math.max(0, 1 - distanceToPointer / 220);
+
+        if (nearPointer > 0) {
+          context.strokeStyle = rgba(accent, nearPointer * 0.32);
+          context.lineWidth = 0.75;
+          context.beginPath();
+          context.moveTo(pointer.x, pointer.y);
+          context.lineTo(particle.x, particle.y);
+          context.stroke();
+        }
+
+        context.fillStyle = rgba(
+          nearPointer > 0.08 ? accent : foreground,
+          0.2 + nearPointer * 0.68
+        );
+        context.beginPath();
+        context.arc(
+          particle.x,
+          particle.y,
+          particle.radius + nearPointer * 1.35,
+          0,
+          Math.PI * 2
+        );
+        context.fill();
+      });
+
+      sparks = sparks.filter(spark => spark.life > 0.02);
+      sparks.forEach(spark => {
+        spark.x += spark.vx;
+        spark.y += spark.vy;
+        spark.life *= 0.94;
+        context.fillStyle = rgba(accent, spark.life * 0.82);
+        context.beginPath();
+        context.arc(
+          spark.x,
+          spark.y,
+          spark.radius * spark.life,
+          0,
+          Math.PI * 2
+        );
+        context.fill();
+      });
+
+      ripples = ripples.filter(ripple => ripple.life > 0.02);
+      ripples.forEach(ripple => {
+        ripple.radius += 3.4;
+        ripple.life *= 0.95;
+        context.strokeStyle = rgba(accent, ripple.life * 0.5);
+        context.lineWidth = 1.4 * ripple.life;
+        context.beginPath();
+        context.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+        context.stroke();
+      });
+
+      animationFrame = requestAnimationFrame(draw);
+    };
+
+    const themeObserver = new MutationObserver(updatePalette);
+    const cleanup = () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", movePointer);
+      window.removeEventListener("pointerout", releasePointer);
+      window.removeEventListener("pointerdown", createRipple);
+      window.removeEventListener("blur", deactivatePointer);
+      themeObserver.disconnect();
+      runtimeWindow.__homeParticleCleanup = undefined;
+    };
+    const deactivatePointer = () => {
+      pointer.active = false;
+    };
+
+    updatePalette();
+    resize();
+    window.addEventListener("resize", resize);
+    window.addEventListener("pointermove", movePointer, { passive: true });
+    window.addEventListener("pointerout", releasePointer, { passive: true });
+    window.addEventListener("pointerdown", createRipple, { passive: true });
+    window.addEventListener("blur", deactivatePointer);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
+    document.addEventListener("astro:before-swap", cleanup, { once: true });
+    runtimeWindow.__homeParticleCleanup = cleanup;
+    animationFrame = requestAnimationFrame(draw);
+  }
+
   document.addEventListener("astro:page-load", () => {
     const indexLayout = (document.querySelector("#main-content") as HTMLElement)
       ?.dataset;
@@ -281,46 +566,6 @@ const homePath = getRelativeLocaleUrl(locale, "");
     if (indexLayout?.layout) {
       sessionStorage.setItem("backUrl", indexLayout.homePath ?? baseRoot);
     }
-
-    const hero = document.querySelector<HTMLElement>("[data-mouse-reactive]");
-    const supportsMotion = window.matchMedia(
-      "(pointer: fine) and (prefers-reduced-motion: no-preference)"
-    );
-
-    if (!hero || !supportsMotion.matches) return;
-
-    let pointerX = 0;
-    let pointerY = 0;
-    let animationFrame = 0;
-
-    const paintPointer = () => {
-      const bounds = hero.getBoundingClientRect();
-      const x = Math.min(Math.max(pointerX - bounds.left, 0), bounds.width);
-      const y = Math.min(Math.max(pointerY - bounds.top, 0), bounds.height);
-      const normalizedX = x / bounds.width - 0.5;
-      const normalizedY = y / bounds.height - 0.5;
-
-      hero.style.setProperty("--pointer-x", `${x}px`);
-      hero.style.setProperty("--pointer-y", `${y}px`);
-      hero.style.setProperty("--aura-opacity", "0.92");
-      hero.style.setProperty("--tilt-x", `${normalizedY * -2.4}deg`);
-      hero.style.setProperty("--tilt-y", `${normalizedX * 3}deg`);
-      hero.dataset.pointerActive = "true";
-      animationFrame = 0;
-    };
-
-    hero.addEventListener("pointermove", event => {
-      if (event.pointerType === "touch") return;
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-      if (!animationFrame) animationFrame = requestAnimationFrame(paintPointer);
-    });
-
-    hero.addEventListener("pointerleave", () => {
-      hero.dataset.pointerActive = "false";
-      hero.style.setProperty("--aura-opacity", "0.38");
-      hero.style.setProperty("--tilt-x", "0deg");
-      hero.style.setProperty("--tilt-y", "0deg");
-    });
+    initParticleField();
   });
 </script>
