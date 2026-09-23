@@ -33,7 +33,13 @@ const homePath = getRelativeLocaleUrl(locale, "");
     data-home-path={homePath}
     class="app-layout"
   >
-    <section id="hero" class="border-border border-b pt-8 pb-6">
+    <section
+      id="hero"
+      data-mouse-reactive
+      class="interactive-hero border-border border-b pt-8 pb-6"
+    >
+      <div class="mouse-aura" aria-hidden="true"></div>
+      <div class="mouse-spark" aria-hidden="true"></div>
       <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
         远在天边，<span class="text-accent">好东西在眼前。</span>
       </h1>
@@ -56,7 +62,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
         这里是我的 AI 实践笔记，也是一个持续生长的创作空间。
         我会记录真实的尝试、踩过的坑、值得反复使用的方法，以及偶尔出现的灵感。
       </p>
-      <p class="mt-3 text-muted-foreground">
+      <p class="text-muted-foreground mt-3">
         从一个具体问题出发，把复杂的东西想清楚、做出来，再诚实地写下来。
         <LinkButton
           class="hover:text-accent underline decoration-dashed underline-offset-4"
@@ -66,17 +72,23 @@ const homePath = getRelativeLocaleUrl(locale, "");
         </LinkButton>
       </p>
       <div class="mt-8 grid gap-3 sm:grid-cols-3">
-        <div class="border-border rounded-lg border p-4">
+        <div class="hero-card border-border rounded-lg border p-4">
           <strong class="block">AI 实践</strong>
-          <span class="text-muted-foreground mt-1 block text-sm">模型、工作流与真实项目</span>
+          <span class="text-muted-foreground mt-1 block text-sm"
+            >模型、工作流与真实项目</span
+          >
         </div>
-        <div class="border-border rounded-lg border p-4">
+        <div class="hero-card border-border rounded-lg border p-4">
           <strong class="block">方法沉淀</strong>
-          <span class="text-muted-foreground mt-1 block text-sm">可复用的经验与思考</span>
+          <span class="text-muted-foreground mt-1 block text-sm"
+            >可复用的经验与思考</span
+          >
         </div>
-        <div class="border-border rounded-lg border p-4">
+        <div class="hero-card border-border rounded-lg border p-4">
           <strong class="block">创作展示</strong>
-          <span class="text-muted-foreground mt-1 block text-sm">作品、实验与新鲜想法</span>
+          <span class="text-muted-foreground mt-1 block text-sm"
+            >作品、实验与新鲜想法</span
+          >
         </div>
       </div>
       {
@@ -137,6 +149,130 @@ const homePath = getRelativeLocaleUrl(locale, "");
   <Footer />
 </Layout>
 
+<style>
+  .interactive-hero {
+    --pointer-x: 72%;
+    --pointer-y: 26%;
+    --aura-opacity: 0.38;
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .interactive-hero > :not(.mouse-aura, .mouse-spark) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mouse-aura {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        15rem circle at var(--pointer-x) var(--pointer-y),
+        color-mix(in srgb, var(--accent) 19%, transparent),
+        transparent 72%
+      ),
+      radial-gradient(
+        34rem circle at var(--pointer-x) var(--pointer-y),
+        color-mix(in srgb, var(--accent) 7%, transparent),
+        transparent 54%
+      );
+    opacity: var(--aura-opacity);
+    transition: opacity 280ms ease;
+  }
+
+  .mouse-spark {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 1.65rem;
+    height: 1.65rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 48%, transparent);
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow:
+      0 0 1.25rem color-mix(in srgb, var(--accent) 36%, transparent),
+      inset 0 0 0.8rem color-mix(in srgb, var(--accent) 10%, transparent);
+    transform: translate3d(var(--pointer-x), var(--pointer-y), 0)
+      translate(-50%, -50%);
+    transition: opacity 180ms ease;
+    will-change: transform;
+  }
+
+  .mouse-spark::before,
+  .mouse-spark::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    content: "";
+    border-radius: 999px;
+    background: var(--accent);
+  }
+
+  .mouse-spark::before {
+    width: 0.28rem;
+    height: 0.28rem;
+    margin: -0.14rem;
+    box-shadow: 0 0 0.55rem var(--accent);
+  }
+
+  .mouse-spark::after {
+    width: 0.2rem;
+    height: 0.2rem;
+    margin: -0.1rem;
+    transform-origin: center;
+    animation: pointer-orbit 2.8s linear infinite;
+  }
+
+  .interactive-hero[data-pointer-active="true"] .mouse-spark {
+    opacity: 0.9;
+  }
+
+  .hero-card {
+    background: color-mix(in srgb, var(--background) 84%, transparent);
+    box-shadow: 0 0 0 transparent;
+    transform: perspective(42rem) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+    transition:
+      transform 150ms ease-out,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+    will-change: transform;
+  }
+
+  .interactive-hero[data-pointer-active="true"] .hero-card {
+    border-color: color-mix(in srgb, var(--accent) 44%, var(--border));
+    box-shadow: 0 0.8rem 2.2rem
+      color-mix(in srgb, var(--accent) 7%, transparent);
+  }
+
+  @keyframes pointer-orbit {
+    from {
+      transform: rotate(0deg) translateX(0.95rem);
+    }
+    to {
+      transform: rotate(360deg) translateX(0.95rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce), (pointer: coarse) {
+    .mouse-spark {
+      display: none;
+    }
+
+    .hero-card {
+      transform: none;
+      transition: border-color 180ms ease;
+    }
+  }
+</style>
+
 <script>
   document.addEventListener("astro:page-load", () => {
     const indexLayout = (document.querySelector("#main-content") as HTMLElement)
@@ -145,5 +281,46 @@ const homePath = getRelativeLocaleUrl(locale, "");
     if (indexLayout?.layout) {
       sessionStorage.setItem("backUrl", indexLayout.homePath ?? baseRoot);
     }
+
+    const hero = document.querySelector<HTMLElement>("[data-mouse-reactive]");
+    const supportsMotion = window.matchMedia(
+      "(pointer: fine) and (prefers-reduced-motion: no-preference)"
+    );
+
+    if (!hero || !supportsMotion.matches) return;
+
+    let pointerX = 0;
+    let pointerY = 0;
+    let animationFrame = 0;
+
+    const paintPointer = () => {
+      const bounds = hero.getBoundingClientRect();
+      const x = Math.min(Math.max(pointerX - bounds.left, 0), bounds.width);
+      const y = Math.min(Math.max(pointerY - bounds.top, 0), bounds.height);
+      const normalizedX = x / bounds.width - 0.5;
+      const normalizedY = y / bounds.height - 0.5;
+
+      hero.style.setProperty("--pointer-x", `${x}px`);
+      hero.style.setProperty("--pointer-y", `${y}px`);
+      hero.style.setProperty("--aura-opacity", "0.92");
+      hero.style.setProperty("--tilt-x", `${normalizedY * -2.4}deg`);
+      hero.style.setProperty("--tilt-y", `${normalizedX * 3}deg`);
+      hero.dataset.pointerActive = "true";
+      animationFrame = 0;
+    };
+
+    hero.addEventListener("pointermove", event => {
+      if (event.pointerType === "touch") return;
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (!animationFrame) animationFrame = requestAnimationFrame(paintPointer);
+    });
+
+    hero.addEventListener("pointerleave", () => {
+      hero.dataset.pointerActive = "false";
+      hero.style.setProperty("--aura-opacity", "0.38");
+      hero.style.setProperty("--tilt-x", "0deg");
+      hero.style.setProperty("--tilt-y", "0deg");
+    });
   });
 </script>
