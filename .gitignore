@@ -25,6 +25,8 @@ pnpm-debug.log*
 
 # pagefind
 public/pagefind
+public/words/
+outputs/words-build-staging/
 
 # pnpm
 .pnpm-store

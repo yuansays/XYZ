@@ -1,3 +1,13 @@
+# 远在天边,好东西在眼前.
+
+本站的背单词功能位于 `/words/`，源码在 `apps/yuansays-words/`。它基于 TypeWords 修改，遵循 GNU GPL v3；原项目归属、修改内容和对应源码见该目录的 `LICENSE`、`MODIFICATIONS.md` 以及应用的“关于”页。
+
+主站仍由 Astro 生成。运行 `pnpm run build` 会先用锁定的 pnpm 10.33 构建背词应用，再把静态产物放入被 Git 忽略的 `public/words/`，最后生成 `dist/` 供现有 Cloudflare Pages 项目自动发布。构建后写入的 `dist/_redirects` 仅处理背词应用的深层页面，不接管博客路由。
+
+背词进度只保存在当前域名的浏览器中；`156349.xyz` 与 `yuansaysai.com` 不自动同步。换设备或域名时，可通过应用设置导出、导入备份。
+
+## 原 AstroPaper 模板说明
+
 # AstroPaper 📄
 
 ![AstroPaper](public/default-og.jpg)
