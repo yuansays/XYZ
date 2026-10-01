@@ -26,7 +26,10 @@ pnpm-debug.log*
 # pagefind
 public/pagefind
 public/words/
+public/listen/
 outputs/words-build-staging/
+outputs/fluent-any-lang-upstream/
+apps/yuansays-listen/dist/
 
 # pnpm
 .pnpm-store

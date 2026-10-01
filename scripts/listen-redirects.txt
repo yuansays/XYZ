@@ -1,0 +1,9 @@
+/listen /listen/ 308
+/listen/library /listen/index.html 200
+/listen/library/* /listen/index.html 200
+/listen/practice /listen/index.html 200
+/listen/sentence-practice /listen/index.html 200
+/listen/stats /listen/index.html 200
+/listen/settings /listen/index.html 200
+/listen/playlists /listen/index.html 200
+/listen/sentences /listen/index.html 200

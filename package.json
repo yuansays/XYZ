@@ -8,7 +8,8 @@
   "scripts": {
     "dev": "astro dev",
     "build:words": "node scripts/build-words.mjs",
-    "build": "node scripts/build-words.mjs && astro check && astro build && node scripts/copy-words-redirects.mjs && pagefind --site dist && node -e \"require('node:fs').cpSync('dist/pagefind','public/pagefind',{recursive:true})\"",
+    "build:listen": "node scripts/build-listen.mjs",
+    "build": "node scripts/build-words.mjs && node scripts/build-listen.mjs && astro check && astro build && node scripts/copy-words-redirects.mjs && pagefind --site dist && node -e \"require('node:fs').cpSync('dist/pagefind','public/pagefind',{recursive:true})\"",
     "preview": "astro preview",
     "sync": "astro sync",
     "astro": "astro",
