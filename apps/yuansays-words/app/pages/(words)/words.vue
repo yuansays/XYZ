@@ -164,6 +164,7 @@ async function resetCacheData() {
 let homeTour: any
 let homeTourStarted = false
 const homeTourSeenKey = 'yuansays-words:tour-home-seen'
+const dictTourRequestedKey = 'yuansays-words:tour-dict-requested'
 
 watch(
   [() => store.load, () => runtimeStore.globalLoading],
@@ -195,6 +196,7 @@ watch(
             {
               text: `下一步（1/${TourConfig.total}）`,
               action() {
+                sessionStorage.setItem(dictTourRequestedKey, '1')
                 tour.next()
                 router.push('/dict-list')
               },

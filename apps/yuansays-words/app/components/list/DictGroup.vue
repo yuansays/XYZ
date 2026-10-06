@@ -2,24 +2,27 @@
 import {watch} from "vue";
 import type {DictResource} from '@/core/types';
 import DictList from "./DictList.vue";
+import {uniqueTaggedDicts} from '@/core/utils/dictCatalog';
+
+const ALL_TAG = '全部'
 
 const props = defineProps<{
   category: string,
-  groupByTag: any,
+  groupByTag: Record<string, DictResource[]>,
   selectId: string
 }>()
 const emit = defineEmits<{
   selectDict: [val: { dict: DictResource, index: number }]
   detail: [],
 }>()
-const tagList = $computed(() => Object.keys(props.groupByTag))
-let currentTag = $ref(tagList[0])
+const tagList = $computed(() => [ALL_TAG, ...Object.keys(props.groupByTag).filter(tag => tag !== ALL_TAG)])
+let currentTag = $ref(ALL_TAG)
 let list = $computed(() => {
-  return props.groupByTag[currentTag]
+  return currentTag === ALL_TAG ? uniqueTaggedDicts(props.groupByTag) : (props.groupByTag[currentTag] ?? [])
 })
 
 watch(() => props.groupByTag, () => {
-  currentTag = tagList[0]
+  currentTag = ALL_TAG
 })
 
 </script>
@@ -31,7 +34,7 @@ watch(() => props.groupByTag, () => {
       <div class="tags">
         <div class="tag" :class="i === currentTag &&'active'"
              @click="currentTag = i"
-             v-for="i in Object.keys(groupByTag)">{{ i }}
+             v-for="i in tagList" :key="i">{{ i }}
         </div>
       </div>
     </div>

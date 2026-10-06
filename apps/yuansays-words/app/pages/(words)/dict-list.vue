@@ -44,6 +44,8 @@ function groupByDictTags(dictList: DictResource[]) {
 }
 
 const { data: dict_list, isFetching } = useFetch(resourceWrap(DICT_LIST.WORD.ALL)).json()
+const reciteBookCount = computed(() => dict_list.value?.filter(book => String(book.id).startsWith('recite-')).length ?? 0)
+const dictTourRequestedKey = 'yuansays-words:tour-dict-requested'
 
 const groupedByCategoryAndTag = $computed(() => {
   let data = []
@@ -77,10 +79,14 @@ const searchList = computed<any[]>(() => {
 })
 
 watch(dict_list, val => {
-  if (!val.length) return
+  if (!val?.length || typeof window === 'undefined') return
+  const tourRequested = sessionStorage.getItem(dictTourRequestedKey) === '1'
+  sessionStorage.removeItem(dictTourRequestedKey)
+  if (!tourRequested || !settingStore.first || isMobile() || localStorage.getItem('yuansays-words:tour-guide')) return
   let cet4 = val.find(v => v.id === 1)
   if (!cet4) return
   _nextTick(async () => {
+    if (router.currentRoute.value.path !== '/dict-list') return
     const Shepherd = await loadJsLib('Shepherd', LIB_JS_URL.SHEPHERD)
     const tour = new Shepherd.Tour(TourConfig)
     tour.on('cancel', () => {
@@ -101,8 +107,7 @@ watch(dict_list, val => {
       ],
     })
 
-    const r = localStorage.getItem('yuansays-words:tour-guide')
-    if (settingStore.first && !r && !isMobile()) {
+    if (settingStore.first && !localStorage.getItem('yuansays-words:tour-guide') && !isMobile()) {
       tour.start()
     }
   }, 500)
@@ -125,6 +130,9 @@ watch(dict_list, val => {
           </BaseIcon>
         </div>
       </div>
+      <p v-if="dict_list?.length" class="catalog-summary">
+        共 {{ dict_list.length }} 本词书（含 {{ reciteBookCount }} 本 recite 词表）；WordTap ECDICT 用于阅读查词，不单列为词书。
+      </p>
       <div class="mt-4" v-if="searchKey">
         <DictList
           v-if="searchList.length"
@@ -150,6 +158,13 @@ watch(dict_list, val => {
 </template>
 
 <style scoped lang="scss">
+
+.catalog-summary {
+  margin-top: 1rem;
+  color: var(--color-font-1);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
 
 @media (max-width: 768px) {
   .dict-list-page {
